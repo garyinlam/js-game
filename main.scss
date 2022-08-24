@@ -1,0 +1,13 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template: repeat(11, 1fr) / repeat(11, 1fr);
+  gap: 5px;
+  &__box {
+    border: 2px solid black;
+  }
+}
