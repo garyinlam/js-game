@@ -1,78 +1,104 @@
-const player = {
-  grid: Array(10).fill(Array(10).fill(false)),
-  ships: [{
-    name: "carrier",
-    size: 5,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "battleship",
-    size: 4,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "destroyer",
-    size: 3,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "submarine",
-    size: 3,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "patrol",
-    size: 2,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  }]
-};
+class Player {
+  constructor() {
+    this.grid = new Array(10);
+    for (let i = 0; i < this.grid.length; i++) {
+      this.grid[i] = new Array(10).fill("w");
+    }
+    this.ships = [{
+      name: "carrier",
+      size: 5,
+      coordinates: [0,0],
+      orientation: "ns",
+      isDestroyed: false
+    },{
+      name: "battleship",
+      size: 4,
+      coordinates: [0,0],
+      orientation: "ns",
+      isDestroyed: false
+    },{
+      name: "destroyer",
+      size: 3,
+      coordinates: [0,0],
+      orientation: "ns",
+      isDestroyed: false
+    },{
+      name: "submarine",
+      size: 3,
+      coordinates: [0,0],
+      orientation: "ns",
+      isDestroyed: false
+    },{
+      name: "patrol",
+      size: 2,
+      coordinates: [0,0],
+      orientation: "ns",
+      isDestroyed: false
+    }];
+  }
+}
 
-const ai = {
-  grid: Array(10).fill(Array(10).fill(false)),
-  ships: [{
-    name: "carrier",
-    size: 5,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "battleship",
-    size: 4,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "destroyer",
-    size: 3,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "submarine",
-    size: 3,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  },{
-    name: "patrol",
-    size: 2,
-    coordinates: [0,0],
-    orientation: "ns",
-    isDestroyed: false
-  }]
-};
+let player = new Player();
+let ai = new Player();
+
+
+
+
+const printGrid = (grid) => {
+  grid.forEach((i) => {
+    console.log(i.toString());
+  });
+}
+
+
+
+
+const place = (ship,x,y,board) => {
+  let placed = false
+  let clear = true;
+  if (ship.orientation === "ns") {
+    if (x+ship.size > 10) {
+      clear = false;
+    } else {
+      for (let i = 0; i < ship.size; i++) {
+        if(board[x+i][y] != 'w') {
+          clear = false;
+        }
+      }
+    }
+    if (clear) {
+      for (let i = 0; i < ship.size; i++) {
+        board[x+i][y] = ship.name[0];
+      }
+      ship.coordinates = [x,y];
+      placed = true;
+    }
+  } else {
+    if (y+ship.size > 10) {
+      clear = false;
+    } else {
+      for (let i = 0; i < ship.size; i++) {
+        if(board[x][y+i] != 'w') {
+          clear = false;
+        }
+      }
+    }
+    if (clear) {
+      for (let i = 0; i < ship.size; i++) {
+        board[x][y+i] = ship.name[0];
+      }
+      ship.coordinates = [x,y];
+      placed = true;
+    }
+  }
+  return placed;
+}
 
 const grids = document.getElementsByClassName("grid");
 const startButton = document.getElementById("start");
 const placeButton = document.getElementById("place-ship");
+const instructions = document.querySelector(".instructions");
 const rotateButton = document.getElementById("rotate");
-
 
 
 
@@ -87,25 +113,22 @@ for (const item of grids) {
 
 let lastClicked = [0,0];
 
-
-
-
-const isGameStarted = false;
-
 const startGame = () => {
   //start game
+  instructions.innerHTML = "Place Aircraft Carrier (5)"
   setupGame()
 }
 
+let counter = 0;
+  
 const setupGame = () => {
   //game setup
-  placeButton.classList.add("show");
-  rotateButton.classList.add("show");
   player.ships.forEach((ship) => {
     grids[0].innerHTML += `<div class="ship ship__${ship.name}"></div>`;
   });
 
   setupBoxes();
+
 
   
 }
@@ -121,15 +144,43 @@ const setupBoxes = () => {
     box.style.cssText += styleText;
     box.addEventListener("click",() => {
       lastClicked = box.coord;
-      console.log(lastClicked);
+      instructions.innerHTML = `Last clicked: ${lastClicked}`
     });
   }
 }
+
+placeButton.addEventListener("click", () => {
+  const x = lastClicked[1]-1;
+  const y = lastClicked[0]-1;
+  if(counter < 5){
+    const placed = place(player.ships[counter],x,y,player.grid);
+    if(placed) {
+      counter++;
+    } else {
+      console.log("try again");
+    }
+    if (counter == 5) {
+      placeButton.disabled = true;
+    }
+  } else {
+    console.log("no more to place");
+  }
+});
+
+rotateButton.addEventListener("click",() => player.ships[counter].orientation === "ns" ? player.ships[counter].orientation = "ew" : player.ships[counter].orientation = "ns");
+
+startButton.addEventListener("click", startGame);
+/*
+
+
+
+
+const isGameStarted = false;
+
+
 
 const resetGame = () => {
   //resets game
 }
 
-
-startButton.addEventListener("click", startGame);
-// placeButton.addEventListener("click", );
+*/
