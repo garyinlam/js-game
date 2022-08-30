@@ -103,6 +103,34 @@ const place = (ship,x,y,board) => {
   return placed;
 }
 
+const shoot = (xc,yc,board,ships) => {
+  let hit = false;
+  const square = board[xc][yc];
+  if (square === 'w') {
+    board[xc][yc] += 'h';
+    console.log("miss");
+  } else {
+    if (square.length === 2) {
+      console.log("already shot");
+    } else {
+      ships.forEach((ship) => {
+        if (ship.name[0] == square) {
+          ship.size--;
+          if (ship.size == 0) {
+            ship.isDestroyed = true;
+            console.log(`${ship.name} destroyed`);
+          }
+        }
+      })
+      board[xc][yc] += 'h';
+      console.log("hit"); 
+    }
+    hit = true;
+  }
+  return hit;
+}
+
+
 
 const letters = [' ','A','B','C','D','E','F','G','H','I','J'];
 for (const item of grids) {
@@ -129,8 +157,21 @@ const setupGame = () => {
     ships.innerHTML += `<div class="ship ship__${ship.name}"></div>`;
   });
 
+  placeButton.disabled = false;
+
   setupBoxes();
 
+  ai.ships.forEach((ship) => {
+    let placed = false;
+    while(!placed) {
+      const xCoord = Math.floor(Math.random() * (11-ship.size));
+      const yCoord = Math.floor(Math.random() * (11-ship.size));
+      ship.coordinates = [yCoord,xCoord];
+      const direction = Math.floor(Math.random() * 2);
+      direction == 1 ? ship.orientation = "ns" : ship.orientation = "ew"
+      placed = place(ship,xCoord,yCoord,ai.grid);
+    }
+  });
 
   
 }
@@ -206,7 +247,47 @@ rotateButton.addEventListener("click",() => player.ships[counter].orientation ==
 startButton.addEventListener("click", startGame);
 
 fireButton.addEventListener("click", () => {
-  
+  const x = boxes[lastClicked].coord[1]-1;
+  const y = boxes[lastClicked].coord[0]-1;
+  const shot = shoot(x, y, ai.grid, ai.ships);
+  if (shot) {
+    let shipsDestroyed = 0;
+    ai.ships.forEach((ship) => {
+      if (ship.isDestroyed) {
+        shipsDestroyed++;
+      }
+    });
+    if (shipsDestroyed == ai.ships.length) {
+      console.log("you win");
+      fire.disabled = true;
+    } else {
+      console.log("shoot again");
+    }
+  } else {
+    let aiHit = true;
+    while (aiHit) {
+      const xCoord = Math.floor(Math.random() * 10);
+      const yCoord = Math.floor(Math.random() * 10);
+      console.log(`ai shot ${letters[xCoord+1]},${yCoord+1}`);
+      const didHit = shoot(xCoord, yCoord, player.grid, player.ships);
+      if (didHit) {
+        console.log("ai hit");
+        let shipsDestroyed = 0;
+        player.ships.forEach((ship) => {
+          if (ship.isDestroyed) {
+            shipsDestroyed++;
+          }
+        });
+        if (shipsDestroyed == player.ships.length) {
+          console.log("you lose");
+          fire.disabled = true;
+        }
+      } else {
+        console.log("ai missed");
+      }
+      aiHit = didHit;
+    }
+  }
 })
 /*
 
