@@ -6,13 +6,22 @@
 .grid {
   display: grid;
   grid-template: repeat(11, 1fr)/repeat(11, 1fr);
-  gap: 5px;
+  margin: 10px;
+  border: 2px solid black;
 }
 .grid__box {
   border: 2px solid black;
+  aspect-ratio: 1/1;
+}
+
+.last {
+  background-color: black;
+  color: white;
 }
 
 .ship {
-  grid-row: 1;
-  grid-column: 1;
+  position: absolute;
+  display: none;
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 25%;
 }
