@@ -146,6 +146,7 @@ let lastClicked = 0;
 const startGame = () => {
   //start game
   instructions.innerHTML = "Place carrier (5)"
+  startButton.disabled = true;
   setupGame()
 }
 
@@ -258,19 +259,24 @@ fireButton.addEventListener("click", () => {
       }
     });
     if (shipsDestroyed == ai.ships.length) {
-      console.log("you win");
+      alert("you win");
+      instructions.innerHTML = "You win!";
       fire.disabled = true;
     } else {
-      console.log("shoot again");
+      boxes[lastClicked].classList.add("hit")
+      instructions.innerHTML = "Hit! Shoot again";
     }
   } else {
+    boxes[lastClicked].classList.add("miss");
     let aiHit = true;
     while (aiHit) {
       const xCoord = Math.floor(Math.random() * 10);
       const yCoord = Math.floor(Math.random() * 10);
-      console.log(`ai shot ${letters[xCoord+1]},${yCoord+1}`);
+      console.log(`ai shot ${letters[yCoord+1]},${xCoord+1}`);
       const didHit = shoot(xCoord, yCoord, player.grid, player.ships);
+      const boxPos = coordToNumber([xCoord,yCoord]);
       if (didHit) {
+        boxes[boxPos].classList.add("hit");
         console.log("ai hit");
         let shipsDestroyed = 0;
         player.ships.forEach((ship) => {
@@ -283,12 +289,21 @@ fireButton.addEventListener("click", () => {
           fire.disabled = true;
         }
       } else {
+        boxes[boxPos].classList.add("miss");
         console.log("ai missed");
       }
       aiHit = didHit;
     }
   }
-})
+});
+
+const resetGame = () => {
+  player = new Player();
+  ai = new Player();
+  startButton.disabled = false;
+  placeButton.disabled = true;
+  fireButton.disabled = true;
+}
 /*
 
 

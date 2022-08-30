@@ -24,4 +24,14 @@
   display: none;
   background-color: rgba(128, 128, 128, 0.5);
   border-radius: 25%;
+  border: 2px solid black;
+  box-sizing: border-box;
+}
+
+.hit {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+.miss {
+  background-color: rgba(128, 128, 128, 0.5);
 }
