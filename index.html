@@ -9,29 +9,27 @@
 <body>
   <header>
     <h1>Battleship</h1>
-    <div class="controls">
+    <div class="header__controls">
       <button id="start">Start Game</button>
       <button id="reset">Reset</button>
     </div>
   </header>
   <main>
     <div class="container">
-      <h2 class="name"></h2>
-      <div class="controls">
+      <div class="container__controls">
         <button id="place-ship" disabled>Place ship</button>
         <button id="rotate">Rotate</button>
-        <p class="instructions">Press start</p>
+        <p class="container__instructions">Press start</p>
       </div>
       <div class="grid"></div>
       <div class="ships"></div>
     </div>
     <div class="container">
-      <h2 class="name">AI</h2>
-      <div class="controls">
+      <h2 class="container__name">AI</h2>
+      <div class="container__controls">
         <button id="fire" disabled>Fire</button>
       </div>
       <div class="grid"></div>
-      <div class="ships"></div>
     </div>
     <div id="history"></div>
   </main>

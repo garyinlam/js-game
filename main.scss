@@ -1,17 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Play&display=swap');
+
+$font-primary: 'Play',Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif; ; 
+$colour-text: rgb(51, 51, 51);
+$colour-primary: rgb(173, 210, 252);
+$colour-hit: rgb(255, 50, 50);
+$colour-miss: rgb(199, 199, 199);
+$border-style: 2px solid $colour-text;
+
+
 * {
   margin: 0;
   padding: 0;
+  font-family: $font-primary;
+}
+
+body {
+  background-color: $colour-primary;
+}
+
+header {
+  h1 {
+    text-align: center;
+    margin: 5px;
+  }
+}
+
+button {
+  font-size: 0.9em;
+  margin: 2px;
+  padding: 2px;
+}
+
+.container {
+  &__name,&__instructions{
+    margin: 5px;
+  }
+}
+
+#history {
+  margin: 5px;
 }
 
 .grid {
   display: grid;
   grid-template: repeat(11, 1fr) / repeat(11, 1fr);
   margin: 10px;
-  border: 2px solid black;
+  border: $border-style;
 
   &__box {
-    border: 2px solid black;
+    border: $border-style;
     aspect-ratio: 1/1;
+    text-align: center;
   }
 }
 
@@ -25,7 +64,7 @@
   display: none;
   background-color: rgba(128, 128, 128, 0.7);
   border-radius: 25%;
-  border: 2px solid black;
+  border: $border-style;
   box-sizing: border-box;
   text-align: center;
   color: white;
@@ -35,9 +74,13 @@
 }
 
 .hit {
- background-color: rgba(255, 0, 0, 1);
+ background-color: $colour-hit;
 }
 
 .miss {
-  background-color: rgba(128, 128, 128, 0.5);
+  background-color: $colour-miss;
+}
+
+@media screen and (min-width: 768px) {
+  
 }

@@ -1,17 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Play&display=swap");
 * {
   margin: 0;
   padding: 0;
+  font-family: "Play", Impact, Haettenschweiler, Franklin Gothic Bold, Charcoal, Helvetica Inserat, Bitstream Vera Sans Bold, Arial Black, sans serif;
+}
+
+body {
+  background-color: #add2fc;
+}
+
+header h1 {
+  text-align: center;
+  margin: 5px;
+}
+
+button {
+  font-size: 0.9em;
+  margin: 2px;
+  padding: 2px;
+}
+
+.container__name, .container__instructions {
+  margin: 5px;
+}
+
+#history {
+  margin: 5px;
 }
 
 .grid {
   display: grid;
   grid-template: repeat(11, 1fr)/repeat(11, 1fr);
   margin: 10px;
-  border: 2px solid black;
+  border: 2px solid #333333;
 }
 .grid__box {
-  border: 2px solid black;
+  border: 2px solid #333333;
   aspect-ratio: 1/1;
+  text-align: center;
 }
 
 .last {
@@ -24,7 +50,7 @@
   display: none;
   background-color: rgba(128, 128, 128, 0.7);
   border-radius: 25%;
-  border: 2px solid black;
+  border: 2px solid #333333;
   box-sizing: border-box;
   text-align: center;
   color: white;
@@ -34,9 +60,9 @@
 }
 
 .hit {
-  background-color: red;
+  background-color: #ff3232;
 }
 
 .miss {
-  background-color: rgba(128, 128, 128, 0.5);
+  background-color: #c7c7c7;
 }

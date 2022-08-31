@@ -2,7 +2,7 @@ const grids = document.getElementsByClassName("grid");
 const startButton = document.getElementById("start");
 const resetButton = document.getElementById("reset");
 const placeButton = document.getElementById("place-ship");
-const instructions = document.querySelector(".instructions");
+const instructions = document.querySelector(".container__instructions");
 const rotateButton = document.getElementById("rotate");
 const ships = document.querySelector(".ships");
 const fireButton = document.getElementById("fire");
@@ -156,7 +156,7 @@ let counter = 0;
 const setupGame = () => {
   //game setup
   player.ships.forEach((ship) => {
-    ships.innerHTML += `<div class="ship ship__${ship.name}">${ship.name}</div>`;
+    ships.innerHTML += `<div class="ship ship--${ship.name}">${ship.name}</div>`;
   });
 
   placeButton.disabled = false;
@@ -210,6 +210,11 @@ const resetGame = () => {
     ship.style.cssText = "";
   }
   counter = 0;
+  for (const box of boxes) {
+    box.classList.remove("miss");
+    box.classList.remove("hit");
+
+  }
 }
 
 
@@ -223,7 +228,7 @@ placeButton.addEventListener("click", () => {
       let end = 0;
       let width = 100;
       let height = 100;
-      const shipToDisp = document.querySelector(`.ship__${player.ships[counter].name}`);
+      const shipToDisp = document.querySelector(`.ship--${player.ships[counter].name}`);
       shipToDisp.style.cssText = "";
       if(player.ships[counter].orientation === "ns") {
         end = coordToNumber([player.ships[counter].coordinates[0]+player.ships[counter].size-1,player.ships[counter].coordinates[1]]);
@@ -313,6 +318,8 @@ fireButton.addEventListener("click", () => {
           instructions.innerHTML = "You lose!";
           history.innerHTML += "<br>You lose!"
           fire.disabled = true;
+          aiHit = false;
+          break;
         }
       } else {
         boxes[boxPos].classList.add("miss");
