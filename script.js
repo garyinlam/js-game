@@ -1,10 +1,13 @@
 const grids = document.getElementsByClassName("grid");
 const startButton = document.getElementById("start");
+const resetButton = document.getElementById("reset");
 const placeButton = document.getElementById("place-ship");
 const instructions = document.querySelector(".instructions");
 const rotateButton = document.getElementById("rotate");
 const ships = document.querySelector(".ships");
 const fireButton = document.getElementById("fire");
+const history = document.getElementById("history");
+
 let boxes;
 
 class Player {
@@ -108,22 +111,20 @@ const shoot = (xc,yc,board,ships) => {
   const square = board[xc][yc];
   if (square === 'w') {
     board[xc][yc] += 'h';
-    console.log("miss");
   } else {
     if (square.length === 2) {
-      console.log("already shot");
+      // alert("Already shot, try again");
     } else {
       ships.forEach((ship) => {
         if (ship.name[0] == square) {
           ship.size--;
           if (ship.size == 0) {
             ship.isDestroyed = true;
-            console.log(`${ship.name} destroyed`);
+            history.innerHTML += `<br>${ship.name.toUpperCase()} destroyed`;
           }
         }
       })
       board[xc][yc] += 'h';
-      console.log("hit"); 
     }
     hit = true;
   }
@@ -155,7 +156,7 @@ let counter = 0;
 const setupGame = () => {
   //game setup
   player.ships.forEach((ship) => {
-    ships.innerHTML += `<div class="ship ship__${ship.name}"></div>`;
+    ships.innerHTML += `<div class="ship ship__${ship.name}">${ship.name}</div>`;
   });
 
   placeButton.disabled = false;
@@ -196,6 +197,22 @@ const setupBoxes = () => {
   }
 }
 
+const resetGame = () => {
+  player = new Player();
+  ai = new Player();
+  startButton.disabled = false;
+  placeButton.disabled = true;
+  fireButton.disabled = true;
+  history.innerHTML = "";
+  instructions.innerHTML = "Press start";
+  const shipsToHide = document.getElementsByClassName("ship");
+  for (const ship of shipsToHide) {
+    ship.style.cssText = "";
+  }
+  counter = 0;
+}
+
+
 placeButton.addEventListener("click", () => {
   const x = boxes[lastClicked].coord[1]-1;
   const y = boxes[lastClicked].coord[0]-1;
@@ -206,18 +223,20 @@ placeButton.addEventListener("click", () => {
       let end = 0;
       let width = 100;
       let height = 100;
+      const shipToDisp = document.querySelector(`.ship__${player.ships[counter].name}`);
+      shipToDisp.style.cssText = "";
       if(player.ships[counter].orientation === "ns") {
         end = coordToNumber([player.ships[counter].coordinates[0]+player.ships[counter].size-1,player.ships[counter].coordinates[1]]);
         width = boxes[start].getBoundingClientRect().width;
         height = boxes[end].getBoundingClientRect().top - boxes[start].getBoundingClientRect().top + boxes[start].getBoundingClientRect().height;
+        shipToDisp.style.cssText = "writing-mode: vertical-rl;"
       } else {
         end = coordToNumber([player.ships[counter].coordinates[0],player.ships[counter].coordinates[1]+player.ships[counter].size-1]);
         height = boxes[start].getBoundingClientRect().height;
         width = boxes[end].getBoundingClientRect().left - boxes[start].getBoundingClientRect().left + boxes[start].getBoundingClientRect().width;
       }
 
-      const shipToDisp = document.querySelector(`.ship__${player.ships[counter].name}`);
-      shipToDisp.style.cssText = `
+      shipToDisp.style.cssText += `
       display: block;
       top: ${boxes[start].getBoundingClientRect().top};
       left: ${boxes[start].getBoundingClientRect().left};
@@ -231,28 +250,30 @@ placeButton.addEventListener("click", () => {
         instructions.innerHTML = `Place ${player.ships[counter].name} (${player.ships[counter].size})`;
       }
     } else {
-      console.log("try again");
+      instructions.innerHTML += `<br>Failed to place try again in a different position`;
     }
     if (counter == 5) {
       placeButton.disabled = true;
       instructions.innerHTML = "Finished ship placement, choose enemy square to shoot"
       fireButton.disabled = false;
+      history.innerHTML = "Game Start <br> Your Turn"
     }
-  } else {
-    console.log("no more to place");
   }
 });
 
 rotateButton.addEventListener("click",() => player.ships[counter].orientation === "ns" ? player.ships[counter].orientation = "ew" : player.ships[counter].orientation = "ns");
 
 startButton.addEventListener("click", startGame);
+resetButton.addEventListener("click", resetGame);
 
 fireButton.addEventListener("click", () => {
   const x = boxes[lastClicked].coord[1]-1;
   const y = boxes[lastClicked].coord[0]-1;
   const shot = shoot(x, y, ai.grid, ai.ships);
+  history.innerHTML += `<br>You shot ${letters[y+1]}${x+1}`;
   if (shot) {
     let shipsDestroyed = 0;
+    boxes[lastClicked].classList.add("hit");
     ai.ships.forEach((ship) => {
       if (ship.isDestroyed) {
         shipsDestroyed++;
@@ -261,23 +282,26 @@ fireButton.addEventListener("click", () => {
     if (shipsDestroyed == ai.ships.length) {
       alert("you win");
       instructions.innerHTML = "You win!";
+      history.innerHTML += "<br>You win!"
       fire.disabled = true;
     } else {
-      boxes[lastClicked].classList.add("hit")
-      instructions.innerHTML = "Hit! Shoot again";
+      instructions.innerHTML = "Shoot again";
+      history.innerHTML += " and hit"
     }
   } else {
     boxes[lastClicked].classList.add("miss");
+    history.innerHTML += " and missed";
+    history.innerHTML += `<br> AI turn`;
     let aiHit = true;
     while (aiHit) {
       const xCoord = Math.floor(Math.random() * 10);
       const yCoord = Math.floor(Math.random() * 10);
-      console.log(`ai shot ${letters[yCoord+1]},${xCoord+1}`);
+      history.innerHTML += `<br>AI shot ${letters[yCoord+1]}${xCoord+1}`;
       const didHit = shoot(xCoord, yCoord, player.grid, player.ships);
       const boxPos = coordToNumber([xCoord,yCoord]);
       if (didHit) {
         boxes[boxPos].classList.add("hit");
-        console.log("ai hit");
+        history.innerHTML += ` and hit`;
         let shipsDestroyed = 0;
         player.ships.forEach((ship) => {
           if (ship.isDestroyed) {
@@ -285,36 +309,17 @@ fireButton.addEventListener("click", () => {
           }
         });
         if (shipsDestroyed == player.ships.length) {
-          console.log("you lose");
+          alert("You lose!");
+          instructions.innerHTML = "You lose!";
+          history.innerHTML += "<br>You lose!"
           fire.disabled = true;
         }
       } else {
         boxes[boxPos].classList.add("miss");
-        console.log("ai missed");
+        history.innerHTML += ` and missed<br>Your Turn`;
       }
       aiHit = didHit;
     }
   }
 });
 
-const resetGame = () => {
-  player = new Player();
-  ai = new Player();
-  startButton.disabled = false;
-  placeButton.disabled = true;
-  fireButton.disabled = true;
-}
-/*
-
-
-
-
-const isGameStarted = false;
-
-
-
-const resetGame = () => {
-  //resets game
-}
-
-*/

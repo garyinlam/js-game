@@ -22,14 +22,19 @@
 .ship {
   position: absolute;
   display: none;
-  background-color: rgba(128, 128, 128, 0.5);
+  background-color: rgba(128, 128, 128, 0.7);
   border-radius: 25%;
   border: 2px solid black;
   box-sizing: border-box;
+  text-align: center;
+  color: white;
+}
+.ship:hover {
+  background-color: gray;
 }
 
 .hit {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: red;
 }
 
 .miss {
