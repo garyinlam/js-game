@@ -88,6 +88,17 @@ button {
   background-color: $colour-miss;
 }
 
+.destroyed {
+  text-decoration: line-through;
+  color: $colour-hit;
+}
+
+.ships {
+  &--opponent {
+    margin: 5px;
+  }
+}
+
 @media screen and (min-width: 768px) {
   main {
     display: flex;

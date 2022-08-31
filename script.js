@@ -4,7 +4,7 @@ const resetButton = document.getElementById("reset");
 const placeButton = document.getElementById("place-ship");
 const instructions = document.querySelector(".container__instructions");
 const rotateButton = document.getElementById("rotate");
-const ships = document.querySelector(".ships");
+const ships = document.querySelectorAll(".ships");
 const fireButton = document.getElementById("fire");
 const history = document.getElementById("history");
 
@@ -156,7 +156,7 @@ let counter = 0;
 const setupGame = () => {
   //game setup
   player.ships.forEach((ship) => {
-    ships.innerHTML += `<div class="ship ship--${ship.name}">${ship.name}</div>`;
+    ships[0].innerHTML += `<div class="ship ship--${ship.name}">${ship.name.toUpperCase()}</div>`;
   });
 
   placeButton.disabled = false;
@@ -172,6 +172,7 @@ const setupGame = () => {
       const direction = Math.floor(Math.random() * 2);
       direction == 1 ? ship.orientation = "ns" : ship.orientation = "ew"
       placed = place(ship,xCoord,yCoord,ai.grid);
+      ships[1].innerHTML += `<p class="${ship.name}">${ship.name.toUpperCase()}</p>`;
     }
   });
 
@@ -213,8 +214,8 @@ const resetGame = () => {
   for (const box of boxes) {
     box.classList.remove("miss");
     box.classList.remove("hit");
-
   }
+  ships[1].innerHTML = "<h2>Opponent ships:</h2>"
 }
 
 
@@ -263,13 +264,14 @@ placeButton.addEventListener("click", () => {
         instructions.innerHTML = `Place ${player.ships[counter].name} (${player.ships[counter].size})`;
       }
     } else {
-      instructions.innerHTML += ` Failed to place try again in a different position`;
+      alert(`Failed to place try again in a different position`);
     }
     if (counter == 5) {
       placeButton.disabled = true;
       instructions.innerHTML = "Finished ship placement, choose enemy square to shoot"
       fireButton.disabled = false;
       history.innerHTML = "<p>Game Start</p><p>---------------Your Turn---------------</p>"
+
     }
   }
 });
@@ -298,6 +300,7 @@ fireButton.addEventListener("click", () => {
     ai.ships.forEach((ship) => {
       if (ship.isDestroyed) {
         shipsDestroyed++;
+        document.querySelector(`.${ship.name}`).classList.add("destroyed");
       }
     });
     if (shipsDestroyed == ai.ships.length) {

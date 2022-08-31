@@ -73,6 +73,15 @@ button {
   background-color: #c7c7c7;
 }
 
+.destroyed {
+  text-decoration: line-through;
+  color: #ff3232;
+}
+
+.ships--opponent {
+  margin: 5px;
+}
+
 @media screen and (min-width: 768px) {
   main {
     display: flex;
