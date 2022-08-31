@@ -120,7 +120,7 @@ const shoot = (xc,yc,board,ships) => {
           ship.size--;
           if (ship.size == 0) {
             ship.isDestroyed = true;
-            history.innerHTML += `<br>${ship.name.toUpperCase()} destroyed`;
+            history.innerHTML += `<p>${ship.name.toUpperCase()} destroyed</p>`;
           }
         }
       })
@@ -219,6 +219,14 @@ const resetGame = () => {
 
 
 placeButton.addEventListener("click", () => {
+  if(lastClicked > 120){
+    alert("Cannot place ship on enemy grid");
+    return;
+  }
+  if(lastClicked % 11 === 0 || lastClicked < 12){
+    alert("Cannot place ship outside grid");
+    return;
+  }
   const x = boxes[lastClicked].coord[1]-1;
   const y = boxes[lastClicked].coord[0]-1;
   if(counter < 5){
@@ -255,13 +263,13 @@ placeButton.addEventListener("click", () => {
         instructions.innerHTML = `Place ${player.ships[counter].name} (${player.ships[counter].size})`;
       }
     } else {
-      instructions.innerHTML += `<br>Failed to place try again in a different position`;
+      instructions.innerHTML += ` Failed to place try again in a different position`;
     }
     if (counter == 5) {
       placeButton.disabled = true;
       instructions.innerHTML = "Finished ship placement, choose enemy square to shoot"
       fireButton.disabled = false;
-      history.innerHTML = "Game Start <br> Your Turn"
+      history.innerHTML = "<p>Game Start</p><p>---------------Your Turn---------------</p>"
     }
   }
 });
@@ -272,10 +280,18 @@ startButton.addEventListener("click", startGame);
 resetButton.addEventListener("click", resetGame);
 
 fireButton.addEventListener("click", () => {
+  if(lastClicked < 121){
+    alert("Cannot shoot your own grid");
+    return;
+  }
+  if(lastClicked % 11 === 0 || lastClicked < 132){
+    alert("Cannot shoot outside grid");
+    return;
+  }
   const x = boxes[lastClicked].coord[1]-1;
   const y = boxes[lastClicked].coord[0]-1;
   const shot = shoot(x, y, ai.grid, ai.ships);
-  history.innerHTML += `<br>You shot ${letters[y+1]}${x+1}`;
+  history.innerHTML += `<p>You shot ${letters[y+1]}${x+1}</p>`;
   if (shot) {
     let shipsDestroyed = 0;
     boxes[lastClicked].classList.add("hit");
@@ -287,26 +303,26 @@ fireButton.addEventListener("click", () => {
     if (shipsDestroyed == ai.ships.length) {
       alert("you win");
       instructions.innerHTML = "You win!";
-      history.innerHTML += "<br>You win!"
+      history.innerHTML += "<p>You win!</p>"
       fire.disabled = true;
     } else {
       instructions.innerHTML = "Shoot again";
-      history.innerHTML += " and hit"
+      history.innerHTML += "<p>and hit</p>"
     }
   } else {
     boxes[lastClicked].classList.add("miss");
-    history.innerHTML += " and missed";
-    history.innerHTML += `<br> AI turn`;
+    history.innerHTML += "<p>and missed</p>";
+    history.innerHTML += `<p>---------------AI turn---------------</p>`;
     let aiHit = true;
     while (aiHit) {
       const xCoord = Math.floor(Math.random() * 10);
       const yCoord = Math.floor(Math.random() * 10);
-      history.innerHTML += `<br>AI shot ${letters[yCoord+1]}${xCoord+1}`;
+      history.innerHTML += `<p>AI shot ${letters[yCoord+1]}${xCoord+1}</p>`;
       const didHit = shoot(xCoord, yCoord, player.grid, player.ships);
       const boxPos = coordToNumber([xCoord,yCoord]);
       if (didHit) {
         boxes[boxPos].classList.add("hit");
-        history.innerHTML += ` and hit`;
+        history.innerHTML += `<p>and hit</p>`;
         let shipsDestroyed = 0;
         player.ships.forEach((ship) => {
           if (ship.isDestroyed) {
@@ -316,14 +332,14 @@ fireButton.addEventListener("click", () => {
         if (shipsDestroyed == player.ships.length) {
           alert("You lose!");
           instructions.innerHTML = "You lose!";
-          history.innerHTML += "<br>You lose!"
+          history.innerHTML += "<p>You lose!</p>"
           fire.disabled = true;
           aiHit = false;
           break;
         }
       } else {
         boxes[boxPos].classList.add("miss");
-        history.innerHTML += ` and missed<br>Your Turn`;
+        history.innerHTML += `<p>and missed</p><p>---------------Your Turn---------------</p>`;
       }
       aiHit = didHit;
     }

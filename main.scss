@@ -12,6 +12,13 @@ $border-style: 2px solid $colour-text;
   margin: 0;
   padding: 0;
   font-family: $font-primary;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 body {
@@ -87,8 +94,14 @@ button {
   }
   .container{
     &__instructions{
-      padding-top: 14px;
+      padding-top: 13px;
     }
+  }
+  #history{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 80vh;
   }
 }
 
