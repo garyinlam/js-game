@@ -82,5 +82,21 @@ button {
 }
 
 @media screen and (min-width: 768px) {
-  
+  main {
+    display: flex;
+  }
+  .container{
+    &__instructions{
+      padding-top: 14px;
+    }
+  }
+}
+
+@media screen and (min-width: 1368px) {
+  main {
+    display: flex;
+  }
+  .container {
+    width: 30%;
+  }
 }
