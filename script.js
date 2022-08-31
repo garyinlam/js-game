@@ -160,6 +160,8 @@ const setupGame = () => {
   });
 
   placeButton.disabled = false;
+  rotateButton.disabled = false;
+
 
   setupBoxes();
 
@@ -204,6 +206,7 @@ const resetGame = () => {
   startButton.disabled = false;
   placeButton.disabled = true;
   fireButton.disabled = true;
+  rotateButton.disabled = true;
   history.innerHTML = "";
   instructions.innerHTML = "Press start";
   const shipsToHide = document.getElementsByClassName("ship");
@@ -258,7 +261,7 @@ placeButton.addEventListener("click", () => {
       height: ${height};
       `;
 
-
+      rotateButton.innerText = rotateButton.innerText.slice(0,-1) + "↕"
       counter++;
       if (counter < 5) {
         instructions.innerHTML = `Place ${player.ships[counter].name} (${player.ships[counter].size})`;
@@ -268,15 +271,23 @@ placeButton.addEventListener("click", () => {
     }
     if (counter == 5) {
       placeButton.disabled = true;
-      instructions.innerHTML = "Finished ship placement, choose enemy square to shoot"
+      instructions.innerHTML = "Finished placement, shoot enemy square"
       fireButton.disabled = false;
       history.innerHTML = "<p>Game Start</p><p>---------------Your Turn---------------</p>"
-
+      rotateButton.disabled = true;
     }
   }
 });
 
-rotateButton.addEventListener("click",() => player.ships[counter].orientation === "ns" ? player.ships[counter].orientation = "ew" : player.ships[counter].orientation = "ns");
+rotateButton.addEventListener("click",() => {
+  if(player.ships[counter].orientation === "ns"){
+    player.ships[counter].orientation = "ew"
+    rotateButton.innerText = rotateButton.innerText.slice(0,-1) + "↔"
+  } else {
+    player.ships[counter].orientation = "ns"
+    rotateButton.innerText = rotateButton.innerText.slice(0,-1) + "↕"
+  }
+});
 
 startButton.addEventListener("click", startGame);
 resetButton.addEventListener("click", resetGame);
