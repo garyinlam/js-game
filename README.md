@@ -17,3 +17,6 @@ Battleships game created using JavaScript, HTML and SCSS
 - If hit can shoot again
 6. AI will take turn automatically
 7. When all ships for one player are destroyed, Game over
+
+
+- Reset button can be hit at anytime and will completely reset game
