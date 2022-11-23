@@ -20,3 +20,12 @@ Battleships game created using JavaScript, HTML and SCSS
 
 
 - Reset button can be hit at anytime and will completely reset game
+
+## Technologies
+
+- JavaScript
+- HTML
+- CSS
+
+## Screenshot
+![Screenshot](/screenshot/Screenshot%202022-10-03%20143527.jpg)
